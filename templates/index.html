@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Audio</title>
+    <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+</head>
+<body>
+    <button id="recordButton" onmousedown="startRecording()" onmouseup="stopRecording()">Hold to Record</button>
+    <p id="response"></p>
+
+    <script>
+        let recorder;
+        let audioContext = new AudioContext();
+
+        async function startRecording() {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            recorder = new Recorder(audioContext.createMediaStreamSource(stream));
+            recorder.record();
+            const response = await fetch('/process_audio', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ audio: base64Audio }),
+                    });
+        }
+
+        async function stopRecording() {
+            recorder.stop();
+            recorder.exportWAV(async (blob) => {
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const base64Audio = reader.result.split(',')[1];
+                    const response = await fetch('/process_audio', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ audio: base64Audio }),
+                    });
+                    const data = await response.json();
+                    document.getElementById('response').innerText = data.response;
+                };
+                reader.readAsDataURL(blob);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/styles.css') }}">
+</head>
+<body>
+<header>
+    <div class="header">
+        <nav>
+            <ul>
+                <li><a href="\signup">Sign Up</a></li>
+                <li><a href="\login">Login</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+  <form class="upload_form" action="/upload" method="post" enctype="multipart/form-data">
+        <label for="resume_input" class="upload_label">Choose a file</label>
+        <input type="file" id="resume_input" name="input_document" accept=".pdf,.doc,.docx">
+        <button type="submit" class="upload_button">Upload</button>
+  </form>
+</body>
+</html>

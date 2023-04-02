@@ -1,0 +1,155 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+
+.jumbotron {
+    background-color: #4b5563;
+    color: #ffffff;
+    font-weight: 500;
+    padding: 30px;
+    border-radius: 5px;
+}
+
+.container {
+    max-width: 800px;
+}
+
+#chatbox {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    min-height: 500px;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+#userInput {
+    display: flex;
+}
+
+#textInput {
+    flex-grow: 1;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+#buttonInput {
+    flex-grow: 0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: #4b5563;
+    color: #ffffff;
+    border-color: #4b5563;
+}
+
+#buttonInput:hover {
+    background-color: #3b475a;
+    border-color: #3b475a;
+}
+
+.botText, .userText {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 20px;
+    position: relative;
+    clear: both;
+}
+
+.botText span, .userText span {
+    display: inline-block;
+    max-width: 80%;
+}
+
+.botText {
+    background-color: #0d6efd;
+    color: #ffffff;
+}
+
+.botText::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -12px;
+    border: 6px solid transparent;
+    border-right-color: #0d6efd;
+    margin-top: 6px;
+}
+
+.userText {
+    background-color: #e9ecef;
+    float: right;
+    clear: both;
+}
+
+.userText::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -12px;
+    border: 6px solid transparent;
+    border-left-color: #e9ecef;
+    margin-top: 6px;
+}
+
+
+
+
+
+
+/*upload form styling*/
+
+.upload_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border: 2px solid #ccc;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.upload_label {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #454545;
+}
+
+.upload_label:hover {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #000000;
+}
+
+#resume_input {
+  opacity: 0;
+  position: absolute;
+}
+
+.upload_button {
+  background-color: #0099ff;
+  color: #fff;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.3rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload_button:hover {
+  background-color: #0080ff;
+  transform: scale(1.02);
+}
+
+.upload_button:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 153, 255, 0.5);
+}
+

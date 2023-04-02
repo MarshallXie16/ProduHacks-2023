@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Recorder</title>
+</head>
+<body>
+    <button id="recordButton">Press and hold to record</button>
+    <script>const recordButton = document.getElementById("recordButton");
+let audioChunks = [];
+let recorder;
+let audioStream;
+
+async function startRecording() {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioStream = stream;
+    const audioContext = new AudioContext();
+    const source = audioContext.createMediaStreamSource(stream);
+    const processor = audioContext.createScriptProcessor(1024, 1, 1);
+
+    source.connect(processor);
+    processor.connect(audioContext.destination);
+    processor.onaudioprocess = function (e) {
+        audioChunks.push(e.inputBuffer.getChannelData(0));
+    };
+
+    recorder = { stream, processor };
+}
+
+function stopRecording() {
+    recorder.stream.getAudioTracks()[0].stop();
+    recorder.processor.disconnect();
+    sendAudioToServer();
+}
+
+async function sendAudioToServer() {
+    const audioBlob = new Blob([new Float32Array(audioChunks.flat())], { type: "audio/wav" });
+    const formData = new FormData();
+    formData.append("audio", audioBlob, "audio.wav");
+
+    const response = await fetch("/save_audio", {
+        method: "POST",
+        body: formData,
+    });
+
+    if (response.ok) {
+        console.log("Audio saved successfully");
+    } else {
+        console.error("Failed to save audio");
+    }
+}
+
+recordButton.addEventListener("mousedown", startRecording);
+recordButton.addEventListener("mouseup", stopRecording);
+
+    </script>
+</body>
+</html>
