@@ -3,45 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Record Audio</title>
-    <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+    <title>Chatbot</title>
 </head>
 <body>
-    <button id="recordButton" onmousedown="startRecording()" onmouseup="stopRecording()">Hold to Record</button>
-    <p id="response"></p>
+    <button id="recordButton">Start Recording</button>
+    <audio id="responseAudio" controls></audio>
 
     <script>
-        let recorder;
-        let audioContext = new AudioContext();
+        const recordButton = document.getElementById("recordButton");
+        const responseAudio = document.getElementById("responseAudio");
 
-        async function startRecording() {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            recorder = new Recorder(audioContext.createMediaStreamSource(stream));
-            recorder.record();
-            const response = await fetch('/process_audio', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ audio: base64Audio }),
-                    });
-        }
+        let mediaRecorder;
+        let recordedChunks = [];
 
-        async function stopRecording() {
-            recorder.stop();
-            recorder.exportWAV(async (blob) => {
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const base64Audio = reader.result.split(',')[1];
-                    const response = await fetch('/process_audio', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ audio: base64Audio }),
-                    });
-                    const data = await response.json();
-                    document.getElementById('response').innerText = data.response;
-                };
-                reader.readAsDataURL(blob);
-            });
-        }
+        recordButton.addEventListener("click", async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                // Request access to the user's microphone
+                const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                // Initialize the MediaRecorder and start recording
+                mediaRecorder = new MediaRecorder(mediaStream);
+                mediaRecorder.start();
+
+                // Update the button text
+                recordButton.textContent = "Stop Recording";
+
+                // Handle the dataavailable event
+                mediaRecorder.addEventListener("dataavailable", (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                });
+
+                // Handle the stop event
+                mediaRecorder.addEventListener("stop", async () => {
+                    // Update the button text
+                    recordButton.textContent = "Start Recording";
+
+                    // Create a Blob from the recorded chunks
+                    const recordedBlob = new Blob(recordedChunks, { type: "audio/webm" });
+                    recordedChunks = [];
+
+                    // Convert the Blob to a base64 string
+                    const reader = new FileReader();
+                    reader.onloadend = async () => {
+                        const base64Audio = reader.result;
+
+                        // Send the base64 audio to the Flask backend
+                        try {
+                            const response = await fetch("/process_audio", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ audio_data: base64Audio }),
+                            });
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                responseAudio.src = data.audio_data;
+                            } else {
+                                const error = await response.json();
+                                alert(`Error: ${error.error}`);
+                            }
+                        } catch (error) {
+                            alert(`Error: ${error.message}`);
+                        }
+                    };
+
+                    reader.readAsDataURL(recordedBlob);
+                });
+            } else {
+                // Stop the MediaRecorder
+                mediaRecorder.stop();
+            }
+        });
     </script>
 </body>
 </html>
