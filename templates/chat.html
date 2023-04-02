@@ -18,11 +18,17 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-6 offset-sm-3">
-            <div id="chatbox" class="border border-success">
-                {% block starter %}
-                <p class="botText"><span> {{ starter }}</span></p>
-                {% endblock %}
-            </div>
+            <div id="chat-container">
+                <div id="chatbox" class="border border-success">
+                    {% block starter %}
+                    <div class="botText"><span> {{ starter }}</span>
+
+                    </div>
+                    {% endblock %}
+                    <div id="loading-chat-bubble" class="chat-bubble loading-bubble">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
             </div>
 
 <div id="userInput">
@@ -32,7 +38,7 @@
     <button id="recordButton" class="modern">Start Recording</button>
     </div>
 
-<script>
+        <script>
 const recordButton = document.getElementById("recordButton");
 const responseAudio = document.getElementById("responseAudio");
 let mediaRecorder;
@@ -47,7 +53,7 @@ recordButton.addEventListener("click", async () => {
         mediaRecorder.start();
 
         // Update the button text
-        recordButton.textContent = "Stop Recording";
+        recordButton.src = "static/img/voice.png";
 
         // Handle the dataavailable event
         mediaRecorder.addEventListener("dataavailable", (event) => {
@@ -59,7 +65,7 @@ recordButton.addEventListener("click", async () => {
         // Handle the stop event
         mediaRecorder.addEventListener("stop", async () => {
             // Update the button text
-            recordButton.textContent = "Start Recording";
+            recordButton.src = "static/img/voice1.png";
 
             // Create a Blob from the recorded chunks
             const recordedBlob = new Blob(recordedChunks, { type: "audio/webm" });
@@ -126,42 +132,46 @@ function getResponse() {
     $("#buttonInput").click(function() {
         getResponse();
     });
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</div>
-</body>
-</html>
-
-
-
-
-<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-  <button id="recordButton">Hold to Record</button>
-
-  <script>
-    const recordButton = document.getElementById("recordButton");
-    let recording = false;
-
-    recordButton.addEventListener("mousedown", () => {
-      recording = true;
-      $.ajax({ url: "/start_recording", method: "POST" });
+    $("#sendButton").click(function() {
+        getResponse();
     });
 
-    recordButton.addEventListener("mouseup", async () => {
-      if (recording) {
-        recording = false;
-        $.ajax({ url: "/stop_recording", method: "POST" }).done((response) => {
-          console.log("AI:", response);
-        });
-      }
+function getResponse() {
+  let userText = $("#textInput").val();
+  let userHtml = '<p class="userText"><span>' + userText + '</span></p>';
+  $("#textInput").val("");
+  $("#chatbox").append(userHtml);
+  $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);
+
+  // Create the loading chat bubble element
+  let loadingChatBubble = $('<p id="loading-chat-bubble" class="chat-bubble loading-bubble"><span><div class="spinner"></div></span></p>');
+  // Append the loading chat bubble to the chatbox
+  $("#chatbox").append(loadingChatBubble);
+
+
+  // get and display bot response
+  $.get("/get", { msg: userText })
+    .done(function(data) {
+      // Remove the loading chat bubble
+      loadingChatBubble.remove();
+
+      var botHtml = '<p class="botText"><span>' + data + '</span></p>';
+      $("#chatbox").append(botHtml);
+      $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);
+    })
+    .fail(function(error) {
+      // Hide the loading chat bubble in case of error
+      document.getElementById("loading-chat-bubble").style.display = "none";
+      console.error("Error fetching bot response:", error);
     });
-  </script>
+}
+
+
+
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </div>
 </body>
 </html>

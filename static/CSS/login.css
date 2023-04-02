@@ -88,3 +88,17 @@ button:hover{
 #chk:checked ~ .signup label{
 	transform: scale(.6);
 }
+
+#recordButton {
+    cursor: pointer;
+    border: none;
+    outline: none;
+
+    }
+
+#recordButton:hover {
+    cursor: pointer;
+    border: none;
+    outline: none;
+
+    }

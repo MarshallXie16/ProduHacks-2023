@@ -22,7 +22,7 @@ app = Flask(__name__, static_folder='static')
 google_credentials_path = "C:/Users/Lyric/Downloads/basic-strata-382418-6f8ce922e875.json"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = google_credentials_path
 # OpenAI API key
-openai.api_key = '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'
+openai.api_key = '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'
 
 # homepage
 @app.route('/', methods=['GET'])
@@ -68,8 +68,11 @@ def upload_file():
         with open("chat_history.txt", "w") as output:
             output.write(processed_response)
             output.close()
+
+        # format title display
+        file_path_stripped = file_path.rsplit('.', 1)[0]
         # starts the chatbot
-        return render_template("chat.html", starter=api_response)
+        return render_template("chat.html", starter=api_response, filename=file_path_stripped)
     except:
         # error page if invalid file
         return render_template("error.html")

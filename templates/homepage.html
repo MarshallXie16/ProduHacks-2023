@@ -20,12 +20,12 @@
     {% block content %}
     <section class="hero">
       <h2>Your Smart AI Study Buddy</h2>
-      <p>AI providing you with detailed feedback on how to improve structure, grammar, and content. Upload your resume and receive a report in seconds! </p>
-      <form class="upload_form" action="/upload" method="post" enctype="multipart/form-data">
-        <label for="resume_input" class="upload_label" style="margin-bottom: 0;">Choose a file</label>
-          <img style="padding: 20px;" src="static/img/upload.svg"/>
-        <input type="file" id="resume_input" name="input_document" accept=".pdf,.doc,.docx">
-        <button type="submit" class="upload_button">Upload</button>
+      <p>An AI that provides you with detailed feedback on your knowledge of a specific topic. Upload your notes and start studying today!</p>
+      <form class="upload_form" action="/chat" method="post" enctype="multipart/form-data">
+        <label for="resume_input" class="upload_label" style="margin-bottom: 0;"><img style="padding: 20px;" src="static/img/upload.svg"></label>
+        <input type="file" id="resume_input" name="input_document" accept=".pdf,.doc,.docx" onchange="getFileData();">
+          <p id="uploaded_file"></p>
+        <button type="submit" class="upload_button">Submit</button>
         </form>
     </section>
     {% endblock %}
