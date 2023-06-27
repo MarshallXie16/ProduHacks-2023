@@ -22,11 +22,15 @@ app = Flask(__name__, static_folder='static')
 google_credentials_path = "C:/Users/Lyric/Downloads/basic-strata-382418-6f8ce922e875.json"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = google_credentials_path
 # OpenAI API key
-openai.api_key = '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'
+openai.api_key = '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'
 
 # homepage
 @app.route('/', methods=['GET'])
 def homepage():
+    return render_template('splash.html')
+
+@app.route('/home', methods=['GET'])
+def hometestpage():
     return render_template('splash.html')
 
 # signup page
@@ -39,11 +43,15 @@ def signup():
 def login():
     return render_template('login.html')
 
-@app.route('/signin', methods=['GET'])
+@app.route('/main', methods=['GET'])
 def signin():
     return render_template('homepage.html')
 
-@app.route('/upload', methods=['POST'])
+@app.route('/old-main', methods=['GET'])
+def main_page():
+    return render_template('main.html')
+
+@app.route('/chat', methods=['POST'])
 def upload_file():
     global uploaded_file
     file = request.files['input_document']
@@ -166,11 +174,12 @@ def get_api_response(user_input):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Pretend you are my kind and helpful tutor. You will ask me revision questions based on my notes. Be as detailed as possible and only ask by one question at a time. Correct any mistakes I make and provide feedback on my answers. Start with only 1 question."},
-            {"role": "user", "content": f'Can you quiz me? Here are my notes: {user_input}'}
+            {"role": "system", "content": "Pretend you are a kind and helpful tutor. You will ask me critical thinking revision questions based on my notes. Start with only 1 question."},
+            {"role": "user", "content": f'Can you quiz me based on my notes? Be as detailed as possible and only ask by one question at a time. Correct any mistakes I make and provide feedback on my answers.  Here are my notes: {user_input}'}
         ]
     )
     parse_response = response['choices'][0]['message']['content']
+    update_message(user_input, prompt_list)
     update_message(parse_response, prompt_list)
     return parse_response
 
@@ -182,7 +191,7 @@ def get_chat_response(prompt):
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system",
-                 "content": "Pretend you are my kind and helpful tutor. You will ask me revision questions based on my notes. Be as detailed as possible and only ask by one question at a time. Correct any mistakes I make and provide feedback on my answers. Be as concise as possible."},
+                 "content": "Pretend you are my kind and helpful tutor. You will ask me revision questions based on my notes. Be as detailed as possible and only ask by one question at a time. Provide feedback on my answers and only give answers if I don't know. Be as concise as possible."},
                 {"role": "user", "content": f'{prompt}'}
             ]
         )
@@ -231,4 +240,4 @@ def get_audio_response(user_input):
 
 if __name__ == '__main__':
     prompt_list = []
-    socketio.run(app, debug=True, port=5000, allow_unsafe_werkzeug=True)
+    app.run(debug=True, port=5000)

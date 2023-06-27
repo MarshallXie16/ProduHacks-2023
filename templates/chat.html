@@ -53,7 +53,7 @@ recordButton.addEventListener("click", async () => {
         mediaRecorder.start();
 
         // Update the button text
-        recordButton.src = "static/img/voice.png";
+        recordButton.src = "static/img/voice1.png";
 
         // Handle the dataavailable event
         mediaRecorder.addEventListener("dataavailable", (event) => {
@@ -65,7 +65,7 @@ recordButton.addEventListener("click", async () => {
         // Handle the stop event
         mediaRecorder.addEventListener("stop", async () => {
             // Update the button text
-            recordButton.src = "static/img/voice1.png";
+            recordButton.src = "static/img/voice.png";
 
             // Create a Blob from the recorded chunks
             const recordedBlob = new Blob(recordedChunks, { type: "audio/webm" });
@@ -98,7 +98,6 @@ recordButton.addEventListener("click", async () => {
 }
 
                 } catch (error) {
-                    alert(`Error: ${error.message}`);
                 }
             };
 
