@@ -19,10 +19,10 @@ import soundfile as sf
 app = Flask(__name__, static_folder='static')
 
 # Set up your Google and OpenAI API credentials
-google_credentials_path = "C:/Users/Lyric/Downloads/basic-strata-382418-6f8ce922e875.json"
+google_credentials_path = ""
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = google_credentials_path
 # OpenAI API key
-openai.api_key = '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'
+openai.api_key = ''
 
 # homepage
 @app.route('/', methods=['GET'])
