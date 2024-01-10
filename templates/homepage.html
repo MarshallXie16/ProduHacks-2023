@@ -22,28 +22,14 @@
       <h2>Your Smart AI Study Buddy</h2>
       <p>An AI that provides you with detailed feedback on your knowledge of a specific topic. Upload your notes and start studying today!</p>
       <form class="upload_form" action="/chat" method="post" enctype="multipart/form-data">
-        <label for="resume_input" class="upload_label" style="margin-bottom: 0;"><img style="padding: 20px;" src="static/img/upload.svg"></label>
-        <input type="file" id="resume_input" name="input_document" accept=".pdf,.doc,.docx" onchange="getFileData();">
+        <label for="file_upload" class="upload_label" style="margin-bottom: 0;"><img style="padding: 20px;" src="static/img/upload.svg"></label>
+        <input type="file" id="file_upload" name="input_document" accept=".pdf,.doc,.docx" onchange="getFileData();">
           <p id="uploaded_file"></p>
         <button type="submit" class="upload_button">Submit</button>
         </form>
     </section>
     {% endblock %}
 {% block error %}
-{% endblock %}
-{% block display %}
-      <div class="card">
-      <section class="how_it_works">
-        <h2 id="how-it-works">How it works</h2>
-        <ol id="list">
-          <li class="htw"><span class="number">1</span> <strong>Upload your resume: &nbsp</strong> Upload a text (.txt) or word document (.docx)</li>
-          <li class="htw"><span class="number">2</span> <strong>Our AI scans your resume: &nbsp</strong> Please wait for the process to complete!</li>
-          <li class="htw"><span class="number">3</span> <strong>Receive a detailed report: &nbsp</strong> The AI will provide detailed and specific feedback on the strengths and weaknesses of your resume.</li>
-          <li class="htw"><span class="number">4</span> <strong>Quality Score: &nbsp</strong> You will receive a quality score that tells you how professional and effective your resume is.</li>
-        </ol>
-        <p style="text-align: left;">Get started now and take your resume to the next level!</p>
-      </section>
-    </div>
 {% endblock %}
 </body>
 </html>
