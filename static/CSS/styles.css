@@ -120,7 +120,7 @@ body {
   transform: scale(1.02);
 }
 
-#resume_input {
+#file_upload {
   opacity: 0;
   position: absolute;
 }
